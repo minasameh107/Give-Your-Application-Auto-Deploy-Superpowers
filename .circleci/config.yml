@@ -1,5 +1,16 @@
 version: 2.1
 
+orbs:
+  slack: circleci/slack@4.12.1
+
+commands:
+  notify_when_fail:
+    steps:
+      - slack/notify:
+          event: fail
+          channel: $SLACK_DEFAULT_CHANNEL
+          template: basic_fail_1
+
 jobs:
   build-frontend:
     docker:
@@ -17,6 +28,7 @@ jobs:
       - save_cache:
           paths: [frontend/node_modules]
           key: frontend-build
+      - notify_when_fail
 
   build-backend:
     docker:
@@ -34,6 +46,7 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+      - notify_when_fail
 
   test-frontend:
     docker:
@@ -48,6 +61,7 @@ jobs:
             cd frontend
             npm install
             npm run test
+      - notify_when_fail
                 
   test-backend:
     docker:
@@ -62,6 +76,7 @@ jobs:
             cd backend
             npm install
             npm run test
+      - notify_when_fail
 
   scan-frontend:
     docker:
@@ -76,8 +91,8 @@ jobs:
             cd frontend
             npm install
             npm audit fix --audit-level=critical --force
-            npm audit fix --force
             npm audit --audit-level=critical
+      - notify_when_fail
 
   scan-backend:
     docker:
@@ -92,8 +107,8 @@ jobs:
             cd backend
             npm install
             npm audit fix --audit-level=critical --force
-            npm audit fix --force
             npm audit --audit-level=critical
+      - notify_when_fail
 
 workflows:
   default:
