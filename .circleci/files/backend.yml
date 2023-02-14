@@ -23,12 +23,12 @@ Resources:
           CidrIp: 0.0.0.0/0
 
   EC2Instance:
-    Type: AWS::EC2::Instancemina
+    Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: udacity 
+      KeyName: udacity
       ImageId: ami-09cd747c78a9add63 
       Tags:
         - Key: Name
