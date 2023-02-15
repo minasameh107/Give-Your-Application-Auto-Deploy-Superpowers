@@ -10,7 +10,7 @@
     - ansible_stdout_callback: yaml
     
   pre_tasks:
-    - name: Loading environment variables
+    - name: environment variables
       tags: always
       set_fact:
         TYPEORM_CONNECTION: "{{ lookup('env','TYPEORM_CONNECTION') }}"
