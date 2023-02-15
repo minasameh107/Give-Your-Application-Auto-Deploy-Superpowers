@@ -150,7 +150,6 @@ jobs:
             npm audit --audit-level=critical
       - notify_when_fail
 
-
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -203,7 +202,7 @@ jobs:
             cd .circleci/ansible
             cat inventory.txt
             ansible-playbook -i inventory.txt configure-server.yml
-      - destroy_enviroment 
+      - destroy-environment 
 
 workflows:
   default:
