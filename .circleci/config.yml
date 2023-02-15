@@ -10,6 +10,33 @@ commands:
           event: fail
           channel: $SLACK_DEFAULT_CHANNEL
           template: basic_fail_1
+  install_awscli:
+    description: install awscli
+    steps:
+      - run:
+          name: install awscli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscli_package.zip"
+            unzip awscli_package.zip
+            sudo ./aws/install
+  install_ansible:
+    description: install ansible
+    steps:
+      - run:
+          name: install ansible
+          command: |
+            sudo apt update 
+            sudo apt install software-properties-common -y
+            sudo add-apt-repository --yes --update ppa:ansible/ansible
+            sudo apt install ansible -y
+  install_nodejs:
+    description: Install Node.js13
+    steps:
+      - run:
+          name: Install Node.js13
+          command: |
+              curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+              sudo apt install -y nodejs
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     steps:
@@ -159,6 +186,24 @@ jobs:
             - project/.circleci/ansible/inventory.txt
       - destroy-environment
 
+  configure-infrastructure:
+    docker:
+      - image: cimg/base:stable
+    steps:
+      - checkout
+      - install_ansible
+      - add_ssh_keys:
+          fingerprints: ["49:3d:d2:3e:65:b4:80:93:73:2a:69:74:e8:e5:fb:51"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: configure server
+          command: |
+            cd .circleci/ansible
+            cat inventory.txt
+            ansible-playbook -i inventory.txt configure-server.yml
+      - destroy_enviroment 
+
 workflows:
   default:
     jobs:
@@ -177,3 +222,5 @@ workflows:
           filters:
             branches:
               only: [master]
+      - configure-infrastructure:
+          requires: [deploy-infrastructure]
