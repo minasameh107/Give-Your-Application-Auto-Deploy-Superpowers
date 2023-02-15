@@ -165,6 +165,7 @@ jobs:
             npm audit --audit-level=critical
       - notify_when_fail
 
+
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
