@@ -294,11 +294,11 @@ jobs:
           command: |
             cd backend
             npm install --force
+            npm update
       - run:
           name: Deploy backend
           command: |
             cd backend
-            npm i
             npm run build
             cd ..
             tar -C backend -czvf artifact.tar.gz .
