@@ -278,10 +278,10 @@ jobs:
           name: Deploy frontend objects
           command: |
             cd frontend
-            ls > test.txt
-            cat test.txt
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            ls > test.txt
+            cat test.txt
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       - destroy-environment
       - revert-migrations
@@ -292,7 +292,7 @@ jobs:
     steps:
       - checkout
       - install-ansible
-      - install-nodejs
+      - install-nodejsv13
       - install-awscli
       - add_ssh_keys:
           fingerprints: ["49:3d:d2:3e:65:b4:80:93:73:2a:69:74:e8:e5:fb:51"]
