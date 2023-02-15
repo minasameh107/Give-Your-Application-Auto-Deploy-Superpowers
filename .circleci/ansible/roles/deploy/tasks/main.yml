@@ -1,0 +1,21 @@
+---
+- name: "Create Directory"
+  file:
+    path: ~/app-directory
+    state: directory
+
+- name: "Unarchive files"
+  unarchive:
+    src: artifact.tar.gz
+    dest: ~/app-directory
+
+- name: "Install Dependencies"
+  shell: |
+    cd ~/app-directory
+    npm i
+
+- name: "Executing node app with PM2"
+  shell: |
+    cd ~/app-directory/dist
+    pm2 stop default
+    pm2 start main.js
