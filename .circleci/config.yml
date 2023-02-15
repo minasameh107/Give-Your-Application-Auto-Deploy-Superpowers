@@ -165,7 +165,6 @@ jobs:
             npm audit --audit-level=critical
       - notify_when_fail
 
-
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
@@ -238,7 +237,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-                curl https://kvdb.io/9BYEY99PnUNepV4xyhRcqf/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+                curl --insecure https://kvdb.io/9BYEY99PnUNepV4xyhRcqf/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment
       - revert-migrations
