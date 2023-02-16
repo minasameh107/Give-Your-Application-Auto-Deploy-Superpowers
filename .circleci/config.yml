@@ -30,10 +30,10 @@ commands:
             sudo add-apt-repository --yes --update ppa:ansible/ansible
             sudo apt install ansible -y
   install-nodejs:
-    description: Install Node.js13
+    description: Install Node.js
     steps:
       - run:
-          name: Install Node.js13
+          name: Install Node.js
           command: |
               curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
               sudo apt install -y nodejs
@@ -318,6 +318,44 @@ jobs:
       - destroy-environment  
       - revert-migrations
 
+  smoke-test:
+    docker:
+      - image: cimg/node:13.8.0
+    steps:
+      - checkout
+      - install-awscli
+      - install-ansible
+      - run:
+          name: Get backend url
+          command: |
+            export BACKEND_IP=$(aws --region us-east-1 ec2 describe-instances --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --query 'Reservations[*].Instances[*].PublicDnsName' --output text)
+            echo "${BACKEND_IP}"
+      - run:
+          name: Backend smoke test.
+          command: |
+            export API_URL="http://${BACKEND_IP}:3030"
+            echo "${API_URL}"
+            if curl "${API_URL}/api/status" | grep "ok"
+            then
+                return 0
+            else
+                return 1
+            fi
+      - run:
+          name: Frontend smoke test.
+          command: |
+            URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
+            echo ${URL} 
+            if curl -s ${URL} | grep "Welcome"
+            then
+                # Change this to 0 after the job fails
+              return 1
+            else
+              return 1
+            fi
+      - destroy-environment  
+      - revert-migrations
+
 workflows:
   default:
     jobs:
@@ -344,3 +382,5 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
