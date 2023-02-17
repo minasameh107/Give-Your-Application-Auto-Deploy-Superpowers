@@ -235,6 +235,15 @@ jobs:
     steps:
       - checkout
       - install-awscli
+      - run:        
+          name: check environment variables
+          command: |
+            echo $TYPEORM_HOST
+            echo $TYPEORM_MIGRATIONS_DIR
+            node -v
+            npm -v
+            ls -la
+
       - run:
           name: Run migrations
           command: |
