@@ -395,12 +395,12 @@ jobs:
               echo Old Workflow ID: $OldWorkflowID 
               if [[ "${STACKS[@]}" =~ "${OldWorkflowID}" ]]
               then
-                echo "------------------Delete Confirmed------------------"
+                echo "-------------------Delete Confirmed-------------------"
                 aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
                 aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
               else
-                echo "------------------Cannot Delete------------------"
+                echo "-------------------Cannot Delete-------------------"
               fi
 
 workflows:
