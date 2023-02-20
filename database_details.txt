@@ -1,7 +1,0 @@
-Database Details:
-Endpoint (Hostname): udapeopledb.cq8j9cvbgcur.us-east-1.rds.amazonaws.com
-Instance identifier: udapeopledb
-Database name: udapeopledb
-Username: postgres
-Password: udapeople2040
-Port: 5432
